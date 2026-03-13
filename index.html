@@ -1,30 +1,104 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generator Haseł</title>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        #password { margin-top: 10px; font-size: 24px; }
-    </style>
+
+<meta charset="UTF-8">
+<title>Polski Generator Haseł</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
 </head>
-<body>
-    <h1>Interaktywny Generator Haseł</h1>
-    <label for="length">Długość hasła:</label>
-    <input type="number" id="length" value="12" min="1" max="100">
-    <button id="generate">Generuj Hasło</button>
-    <div id="password"></div>
-    <script>
-        document.getElementById('generate').onclick = function() {
-            const length = document.getElementById('length').value;
-            const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()';
-            let password = '';
-            for (let i = 0; i < length; i++) {
-                password += charset.charAt(Math.floor(Math.random() * charset.length));
-            }
-            document.getElementById('password').innerText = password;
-        };
-    </script>
+
+<body class="bg-slate-900 text-white flex items-center justify-center min-h-screen">
+
+<div class="bg-slate-800 p-8 rounded-xl shadow-lg w-[420px]">
+
+<h1 class="text-2xl font-bold mb-6 text-center">
+🔐 Generator Hasła
+</h1>
+
+<input
+id="password"
+readonly
+class="w-full p-3 mb-4 rounded bg-slate-700 text-lg"
+/>
+
+<div class="flex justify-between mb-4">
+
+<div>
+<label>Liczba słów</label>
+<input id="wordCount"
+type="number"
+value="4"
+min="2"
+max="10"
+class="w-16 p-1 rounded text-black">
+</div>
+
+<div>
+<label>Separator</label>
+<select id="separator" class="text-black p-1 rounded">
+<option value="-">-</option>
+<option value="_">_</option>
+<option value=".">.</option>
+<option value="">brak</option>
+</select>
+</div>
+
+</div>
+
+<div class="space-y-1 mb-4">
+
+<label class="flex gap-2">
+<input type="checkbox" id="capitalize">
+Wielka litera
+</label>
+
+<label class="flex gap-2">
+<input type="checkbox" id="addNumber">
+Dodaj liczbę
+</label>
+
+<label class="flex gap-2">
+<input type="checkbox" id="addSymbol">
+Dodaj symbol
+</label>
+
+</div>
+
+<div class="mb-4">
+
+<div class="w-full bg-slate-700 h-2 rounded">
+<div id="strengthBar" class="h-2 rounded bg-red-500 w-0"></div>
+</div>
+
+<p id="strengthText" class="text-sm mt-1 text-gray-400">
+Strength
+</p>
+
+</div>
+
+<div class="flex gap-2">
+
+<button onclick="generatePassphrase()"
+class="flex-1 bg-blue-600 hover:bg-blue-700 p-2 rounded">
+Generuj
+</button>
+
+<button onclick="copyPassword()"
+class="flex-1 bg-green-600 hover:bg-green-700 p-2 rounded">
+Kopiuj
+</button>
+
+</div>
+
+<p id="copied" class="text-green-400 text-sm mt-3 hidden">
+Skopiowano!
+</p>
+
+</div>
+
+<script src="script.js"></script>
+
 </body>
 </html>
