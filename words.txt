@@ -1,1 +1,10 @@
-.
+kot
+pies
+las
+rzeka
+dom
+drzewo
+kwiat
+niebo
+chmura
+kamień
