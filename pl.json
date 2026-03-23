@@ -1,0 +1,21 @@
+{
+  "language": "Polish",
+  "code": "pl",
+  "words": [
+    "ananas", "banan", "cebula", "dynia", "figa", "gruszka", "herbata", "igloo",
+    "jabłko", "kawa", "lemur", "mango", "nocnik", "obłok", "panda", "rakieta",
+    "słoń", "tygrys", "ulica", "wiatr", "zamek", "ziemia", "żółw", "motyl",
+    "kotek", "piesek", "rybka", "ptaszek", "koń", "wilk", "niedźwiedź", "lis",
+    "zając", "mysz", "kret", "sowa", "kruk", "bocian", "jaskółka", "dzięcioł",
+    "rzeka", "góra", "dolina", "las", "pole", "morze", "ocean", "wyspa",
+    "miasto", "wioska", "droga", "most", "pociąg", "statek", "samolot", "rower",
+    "książka", "ołówek", "zeszyt", "szkoła", "klasa", "tablica", "okno", "drzwi",
+    "stół", "krzesło", "łóżko", "szafa", "lampa", "lustro", "dywan", "obraz",
+    "słońce", "księżyc", "gwiazda", "chmura", "deszcz", "śnieg", "tęcza", "burza",
+    "marzenie", "nadzieja", "radość", "spokój", "miłość", "wiedza", "wolność", "piękno",
+    "zima", "wiosna", "lato", "jesień", "poranek", "wieczór", "noc", "świt",
+    "kamień", "drewno", "złoto", "srebro", "diament", "kryształ", "marmur", "granit",
+    "chleb", "masło", "mleko", "ser", "jajko", "mięso", "ryba", "zupa",
+    "muzyka", "taniec", "teatr", "kino", "sport", "mecz", "bieg", "skok"
+  ]
+}

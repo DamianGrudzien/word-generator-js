@@ -1,1 +1,0 @@
-{\n  "name": "password-generator-polish",\n  "version": "1.0.0",\n  "description": "A simple password generator that uses Polish words.",\n  "main": "index.js",\n  "scripts": {\n    "test": "echo 'Error: no test specified' && exit 1"\n  },\n  "author": "Damian Grudzien",\n  "license": "ISC",\n  "dependencies": {}\n}
