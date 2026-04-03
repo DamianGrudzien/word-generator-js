@@ -837,7 +837,11 @@
       for (const [code, lang] of Object.entries(languages)) {
         const btn = document.createElement('button');
         btn.className = 'lang-tab' + (code === activeCode ? ' active' : '');
-        btn.innerHTML = `<span class="flag">${lang.flag || '🌐'}</span> ${lang.language}`;
+        const flagSpan = document.createElement('span');
+        flagSpan.className = 'flag';
+        flagSpan.textContent = lang.flag || '🌐';
+        btn.appendChild(flagSpan);
+        btn.appendChild(document.createTextNode(' ' + lang.language));
         btn.onclick = () => { activeCode = code; renderLangTabs(); generate(); };
         container.appendChild(btn);
       }
