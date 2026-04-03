@@ -905,7 +905,11 @@
       const numberPos = document.getElementById('numberPos').value;
       const numDigits = parseInt(document.getElementById('numDigits').value);
       const specialPos = document.getElementById('specialPos').value;
-      const specialChars = document.getElementById('specialChars').value || '!@#$%^&*';
+      const specialCharsRaw = document.getElementById('specialChars').value.trim();
+      const specialChars = specialCharsRaw || '!@#$%^&*';
+      if (!specialCharsRaw && specialPos !== 'none') {
+        showToast('Special chars field is empty — using default: !@#$%^&*');
+      }
       const sep = getSeparator();
 
       // Pick words
