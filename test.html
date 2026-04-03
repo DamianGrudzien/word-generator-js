@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tests — Passphrase Generator</title>
+  <style>
+    body { font-family: monospace; padding: 2rem; background: #0b0c0f; color: #e8eaf0; line-height: 1.8; }
+    h1 { color: #7effc4; margin-bottom: 1.5rem; }
+    .pass { color: #7effc4; }
+    .fail { color: #ff6b6b; }
+    .summary { margin-top: 1.5rem; font-size: 1.1rem; border-top: 1px solid #2a2d38; padding-top: 1rem; }
+  </style>
+</head>
+<body>
+<h1>Unit Tests</h1>
+<div id="results"></div>
+<div class="summary" id="summary"></div>
+
+<script>
+  // ── Pure functions under test (must match app.js) ──────────────────────────
+  function secureRand(max) {
+    const arr = new Uint32Array(1);
+    crypto.getRandomValues(arr);
+    return arr[0] % max;
+  }
+
+  function randInt(min, max) {
+    return min + secureRand(max - min + 1);
+  }
+
+  function randFrom(arr) {
+    return arr[secureRand(arr.length)];
+  }
+
+  function calcEntropy(poolSize, wordCount, numDigits, numberPos, specialChars, specialPos) {
+    let bits = wordCount * Math.log2(poolSize);
+    if (numberPos !== 'none') bits += numDigits * Math.log2(10);
+    if (specialPos !== 'none') bits += Math.log2(specialChars.length || 1);
+    if (specialPos === 'both') bits += Math.log2(specialChars.length || 1);
+    return Math.round(bits);
+  }
+
+  function escHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // ── Test runner ────────────────────────────────────────────────────────────
+  const out = document.getElementById('results');
+  let passed = 0, failed = 0;
+
+  function test(name, fn) {
+    try {
+      fn();
+      out.innerHTML += `<div class="pass">✓ ${name}</div>`;
+      passed++;
+    } catch(e) {
+      out.innerHTML += `<div class="fail">✗ ${name}: ${e.message}</div>`;
+      failed++;
+    }
+  }
+
+  function assert(cond, msg) {
+    if (!cond) throw new Error(msg || 'Assertion failed');
+  }
+
+  // ── Tests ──────────────────────────────────────────────────────────────────
+  test('secureRand: always in [0, max)', () => {
+    for (let i = 0; i < 1000; i++) {
+      const v = secureRand(10);
+      assert(v >= 0 && v < 10, `Got ${v}`);
+    }
+  });
+
+  test('secureRand: never exceeds max-1', () => {
+    for (let i = 0; i < 1000; i++) {
+      assert(secureRand(1) === 0, 'secureRand(1) must always be 0');
+    }
+  });
+
+  test('randInt: always in [min, max]', () => {
+    for (let i = 0; i < 1000; i++) {
+      const v = randInt(5, 10);
+      assert(v >= 5 && v <= 10, `Got ${v}`);
+    }
+  });
+
+  test('randInt: works for single-value range', () => {
+    for (let i = 0; i < 100; i++) {
+      assert(randInt(7, 7) === 7, 'randInt(7,7) must be 7');
+    }
+  });
+
+  test('randFrom: always returns element from array', () => {
+    const arr = ['a','b','c'];
+    for (let i = 0; i < 200; i++) {
+      assert(arr.includes(randFrom(arr)), 'result not in array');
+    }
+  });
+
+  test('calcEntropy: words only', () => {
+    const bits = calcEntropy(100, 4, 0, 'none', '', 'none');
+    assert(bits === Math.round(4 * Math.log2(100)), `Got ${bits}`);
+  });
+
+  test('calcEntropy: more words = more entropy', () => {
+    const a = calcEntropy(100, 3, 0, 'none', '', 'none');
+    const b = calcEntropy(100, 6, 0, 'none', '', 'none');
+    assert(b > a, `${b} should be > ${a}`);
+  });
+
+  test('calcEntropy: larger pool = more entropy', () => {
+    const small = calcEntropy(50,  4, 0, 'none', '', 'none');
+    const large = calcEntropy(1000, 4, 0, 'none', '', 'none');
+    assert(large > small, `large=${large} small=${small}`);
+  });
+
+  test('calcEntropy: digits add entropy', () => {
+    const without = calcEntropy(100, 4, 0, 'none', '', 'none');
+    const with2   = calcEntropy(100, 4, 2, 'end',  '', 'none');
+    assert(with2 > without, `${with2} should be > ${without}`);
+  });
+
+  test('calcEntropy: both ends doubles special char contribution', () => {
+    const one  = calcEntropy(100, 4, 0, 'none', '!@#', 'end');
+    const both = calcEntropy(100, 4, 0, 'none', '!@#', 'both');
+    assert(both > one, `both=${both} one=${one}`);
+  });
+
+  test('calcEntropy: special chars none = 0 extra bits', () => {
+    const base = calcEntropy(100, 4, 0, 'none', '!@#', 'none');
+    const ref  = calcEntropy(100, 4, 0, 'none', '',    'none');
+    assert(base === ref, `${base} should equal ${ref}`);
+  });
+
+  test('escHtml: escapes &', () => {
+    assert(escHtml('a&b') === 'a&amp;b', `Got: ${escHtml('a&b')}`);
+  });
+
+  test('escHtml: escapes < and >', () => {
+    assert(escHtml('<b>') === '&lt;b&gt;', `Got: ${escHtml('<b>')}`);
+  });
+
+  test('escHtml: leaves safe strings unchanged', () => {
+    assert(escHtml('hello world') === 'hello world');
+  });
+
+  test('escHtml: handles empty string', () => {
+    assert(escHtml('') === '');
+  });
+
+  // Summary
+  document.getElementById('summary').innerHTML =
+    `<span class="${failed ? 'fail' : 'pass'}">${passed} passed</span>, ` +
+    `<span class="${failed ? 'fail' : 'pass'}">${failed} failed</span>`;
+</script>
+</body>
+</html>
