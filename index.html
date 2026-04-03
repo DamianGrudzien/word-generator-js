@@ -915,7 +915,7 @@
         if (cap === 'first') return w.charAt(0).toUpperCase() + w.slice(1);
         if (cap === 'all') return w.toUpperCase();
         if (cap === 'random') return w.split('').map(c =>
-          Math.random() > 0.5 ? c.toUpperCase() : c.toLowerCase()
+          secureRand(2) ? c.toUpperCase() : c.toLowerCase()
         ).join('');
         return w;
       });
