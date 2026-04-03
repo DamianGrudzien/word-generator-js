@@ -1066,16 +1066,31 @@
 
     function renderHistory() {
       const list = document.getElementById('historyList');
+      list.innerHTML = '';
       if (history.length === 0) {
-        list.innerHTML = '<div class="empty-history">No passphrases yet — generate one!</div>';
+        const empty = document.createElement('div');
+        empty.className = 'empty-history';
+        empty.textContent = 'No passphrases yet — generate one!';
+        list.appendChild(empty);
         return;
       }
-      list.innerHTML = history.map((p, i) => `
-        <div class="history-item">
-          <span class="history-phrase">${escHtml(p)}</span>
-          <button class="history-copy" onclick="copyText('${escHtml(p).replace(/'/g,"\\'")}')">📋</button>
-        </div>
-      `).join('');
+      for (const p of history) {
+        const item = document.createElement('div');
+        item.className = 'history-item';
+
+        const span = document.createElement('span');
+        span.className = 'history-phrase';
+        span.textContent = p;
+
+        const btn = document.createElement('button');
+        btn.className = 'history-copy';
+        btn.textContent = '📋';
+        btn.addEventListener('click', () => copyText(p));
+
+        item.appendChild(span);
+        item.appendChild(btn);
+        list.appendChild(item);
+      }
     }
 
     function clearHistory() {
