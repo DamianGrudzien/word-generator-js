@@ -944,10 +944,17 @@
 
       // Build parts
       let parts = [];
+      // For 'between', generate a separate number for each gap
+      const betweenNums = numberPos === 'between'
+        ? Array.from({ length: words.length - 1 }, () => {
+            let n = ''; for (let j = 0; j < numDigits; j++) n += randInt(0, 9); return n;
+          })
+        : [];
+
       if (numberPos === 'between') {
         words.forEach((w, i) => {
           parts.push(w);
-          if (i < words.length - 1) parts.push(numStr);
+          if (i < words.length - 1) parts.push(betweenNums[i]);
         });
       } else {
         parts = [...words];
@@ -959,7 +966,7 @@
       currentPhrase = phrase;
 
       // Render with spans
-      renderPhrase(words, sep, numStr, numberPos, specStart, specEnd, specialChars, cap);
+      renderPhrase(words, sep, numStr, numberPos, specStart, specEnd, specialChars, cap, betweenNums);
 
       // Strength & entropy
       const bits = calcEntropy(lang.words.length, wordCount, numDigits, numberPos, specialChars, specialPos);
@@ -969,7 +976,7 @@
       saveHistory(phrase);
     }
 
-    function renderPhrase(words, sep, numStr, numberPos, specStart, specEnd, specialChars, cap) {
+    function renderPhrase(words, sep, numStr, numberPos, specStart, specEnd, specialChars, cap, betweenNums = []) {
       const display = document.getElementById('phraseDisplay');
 
       function span(cls, txt) {
@@ -988,7 +995,7 @@
       words.forEach((w, i) => {
         if (numberPos === 'between' && i > 0) {
           if (sep) html += span('sep', sep);
-          html += span('num', numStr);
+          html += span('num', betweenNums[i - 1]);
         }
         if (i > 0 && numberPos !== 'between') {
           if (sep) html += span('sep', sep);
