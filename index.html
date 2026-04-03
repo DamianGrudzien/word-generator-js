@@ -1148,9 +1148,13 @@
         showToast('Invalid JSON!'); return;
       }
 
-      if (!data.language || !data.code || !Array.isArray(data.words) || data.words.length < 5) {
-        showToast('JSON must have language, code, and at least 5 words');
+      if (!data.language || !data.code || !Array.isArray(data.words) || data.words.length < 20) {
+        showToast('JSON must have language, code, and at least 20 words');
         return;
+      }
+
+      if (data.words.length < 50) {
+        showToast(`Warning: only ${data.words.length} words — 50+ recommended for good entropy`);
       }
 
       languages[data.code] = data;
